@@ -1,0 +1,5 @@
+2025-08-06 17:31:33 - ERROR - Ошибка обновления статуса: 'str' object has no attribute 'get'
+2025-08-10 04:25:48 - ERROR - Ошибка обновления статуса: 'DataManager' object has no attribute 'refresh_all'
+2025-08-10 04:27:06 - ERROR - Ошибка обновления статуса: 'DataManager' object has no attribute 'refresh_all'
+2025-08-10 04:28:37 - ERROR - Ошибка обновления статуса: 'DataManager' object has no attribute 'refresh_all'
+2025-08-10 04:29:20 - ERROR - Ошибка обновления статуса: 'DataManager' object has no attribute 'refresh_all'

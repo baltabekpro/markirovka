@@ -1,0 +1,31 @@
+2025-08-10 04:17:00 - ERROR - Error loading email config: FileNotFoundError: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:17:00 - ERROR - Traceback: Traceback (most recent call last):
+  File "C:\Users\workb\Downloads\chzapi\scripts\email_utils.py", line 14, in load_email_config
+    with open('email_config.json', 'r', encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'email_config.json'
+
+2025-08-10 04:17:42 - ERROR - Error loading email config: FileNotFoundError: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:17:42 - ERROR - Traceback: Traceback (most recent call last):
+  File "C:\Users\workb\Downloads\chzapi\scripts\email_utils.py", line 14, in load_email_config
+    with open('email_config.json', 'r', encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'email_config.json'
+
+2025-08-10 04:18:02 - ERROR - Error loading email config: FileNotFoundError: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:02 - ERROR - Traceback: Traceback (most recent call last):
+  File "C:\Users\workb\Downloads\chzapi\scripts\email_utils.py", line 14, in load_email_config
+    with open('email_config.json', 'r', encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'email_config.json'
+
+2025-08-10 04:19:41 - ERROR - Error loading email config: FileNotFoundError: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:41 - ERROR - Traceback: Traceback (most recent call last):
+  File "C:\Users\workb\Downloads\chzapi\scripts\email_utils.py", line 14, in load_email_config
+    with open('email_config.json', 'r', encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'email_config.json'
+
+2025-08-10 04:20:15 - INFO - Email configuration loaded successfully
+2025-08-10 04:23:08 - INFO - Email configuration loaded successfully
+2025-08-10 04:23:39 - INFO - Email configuration loaded successfully

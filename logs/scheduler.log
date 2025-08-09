@@ -1,0 +1,421 @@
+2025-08-10 04:17:01 - INFO - Created default configuration in scheduler_config.json
+2025-08-10 04:17:01 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:17:01 - INFO - Scheduler initialized
+2025-08-10 04:17:02 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:17:02 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:17:02 - INFO - Scheduler initialized
+2025-08-10 04:17:03 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:17:03 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:17:03 - INFO - Scheduler initialized
+2025-08-10 04:17:04 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:17:04 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:17:04 - INFO - Scheduler initialized
+2025-08-10 04:17:05 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:17:05 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:17:05 - INFO - Scheduler initialized
+2025-08-10 04:17:43 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:17:43 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:17:43 - INFO - Scheduler initialized
+2025-08-10 04:17:44 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:17:44 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:17:44 - INFO - Scheduler initialized
+2025-08-10 04:17:45 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:17:45 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:17:45 - INFO - Scheduler initialized
+2025-08-10 04:17:46 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:17:46 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:17:46 - INFO - Scheduler initialized
+2025-08-10 04:17:47 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:17:47 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:17:47 - INFO - Scheduler initialized
+2025-08-10 04:17:48 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:17:48 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:17:48 - INFO - Scheduler initialized
+2025-08-10 04:17:49 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:17:49 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:17:49 - INFO - Scheduler initialized
+2025-08-10 04:17:50 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:17:50 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:17:50 - INFO - Scheduler initialized
+2025-08-10 04:18:03 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:03 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:03 - INFO - Scheduler initialized
+2025-08-10 04:18:04 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:04 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:04 - INFO - Scheduler initialized
+2025-08-10 04:18:05 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:05 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:05 - INFO - Scheduler initialized
+2025-08-10 04:18:06 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:06 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:06 - INFO - Scheduler initialized
+2025-08-10 04:18:07 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:07 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:07 - INFO - Scheduler initialized
+2025-08-10 04:18:08 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:08 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:08 - INFO - Scheduler initialized
+2025-08-10 04:18:09 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:09 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:09 - INFO - Scheduler initialized
+2025-08-10 04:18:10 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:10 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:10 - INFO - Scheduler initialized
+2025-08-10 04:18:11 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:11 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:11 - INFO - Scheduler initialized
+2025-08-10 04:18:12 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:12 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:12 - INFO - Scheduler initialized
+2025-08-10 04:18:13 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:13 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:13 - INFO - Scheduler initialized
+2025-08-10 04:18:14 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:14 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:14 - INFO - Scheduler initialized
+2025-08-10 04:18:15 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:15 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:15 - INFO - Scheduler initialized
+2025-08-10 04:18:16 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:16 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:16 - INFO - Scheduler initialized
+2025-08-10 04:18:17 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:17 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:17 - INFO - Scheduler initialized
+2025-08-10 04:18:18 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:18 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:18 - INFO - Scheduler initialized
+2025-08-10 04:18:19 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:19 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:19 - INFO - Scheduler initialized
+2025-08-10 04:18:20 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:20 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:20 - INFO - Scheduler initialized
+2025-08-10 04:18:21 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:21 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:21 - INFO - Scheduler initialized
+2025-08-10 04:18:22 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:22 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:22 - INFO - Scheduler initialized
+2025-08-10 04:18:23 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:23 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:23 - INFO - Scheduler initialized
+2025-08-10 04:18:24 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:24 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:24 - INFO - Scheduler initialized
+2025-08-10 04:18:25 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:25 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:25 - INFO - Scheduler initialized
+2025-08-10 04:18:26 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:26 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:26 - INFO - Scheduler initialized
+2025-08-10 04:18:27 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:27 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:27 - INFO - Scheduler initialized
+2025-08-10 04:18:28 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:28 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:28 - INFO - Scheduler initialized
+2025-08-10 04:18:29 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:29 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:29 - INFO - Scheduler initialized
+2025-08-10 04:18:30 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:30 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:30 - INFO - Scheduler initialized
+2025-08-10 04:18:31 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:31 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:31 - INFO - Scheduler initialized
+2025-08-10 04:18:32 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:32 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:32 - INFO - Scheduler initialized
+2025-08-10 04:18:33 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:33 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:33 - INFO - Scheduler initialized
+2025-08-10 04:18:34 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:34 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:34 - INFO - Scheduler initialized
+2025-08-10 04:18:35 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:35 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:35 - INFO - Scheduler initialized
+2025-08-10 04:18:36 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:36 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:36 - INFO - Scheduler initialized
+2025-08-10 04:18:37 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:37 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:37 - INFO - Scheduler initialized
+2025-08-10 04:18:38 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:38 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:38 - INFO - Scheduler initialized
+2025-08-10 04:18:39 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:39 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:39 - INFO - Scheduler initialized
+2025-08-10 04:18:40 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:40 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:40 - INFO - Scheduler initialized
+2025-08-10 04:18:41 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:41 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:41 - INFO - Scheduler initialized
+2025-08-10 04:18:42 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:42 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:42 - INFO - Scheduler initialized
+2025-08-10 04:18:43 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:43 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:43 - INFO - Scheduler initialized
+2025-08-10 04:18:44 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:44 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:44 - INFO - Scheduler initialized
+2025-08-10 04:18:45 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:45 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:45 - INFO - Scheduler initialized
+2025-08-10 04:18:46 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:46 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:46 - INFO - Scheduler initialized
+2025-08-10 04:18:47 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:47 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:47 - INFO - Scheduler initialized
+2025-08-10 04:18:48 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:48 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:48 - INFO - Scheduler initialized
+2025-08-10 04:18:49 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:49 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:49 - INFO - Scheduler initialized
+2025-08-10 04:18:50 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:50 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:50 - INFO - Scheduler initialized
+2025-08-10 04:18:51 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:51 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:51 - INFO - Scheduler initialized
+2025-08-10 04:18:52 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:52 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:52 - INFO - Scheduler initialized
+2025-08-10 04:18:54 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:54 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:54 - INFO - Scheduler initialized
+2025-08-10 04:18:55 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:55 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:55 - INFO - Scheduler initialized
+2025-08-10 04:18:56 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:56 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:56 - INFO - Scheduler initialized
+2025-08-10 04:18:57 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:57 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:57 - INFO - Scheduler initialized
+2025-08-10 04:18:58 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:58 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:58 - INFO - Scheduler initialized
+2025-08-10 04:18:59 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:18:59 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:18:59 - INFO - Scheduler initialized
+2025-08-10 04:19:00 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:00 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:00 - INFO - Scheduler initialized
+2025-08-10 04:19:01 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:01 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:01 - INFO - Scheduler initialized
+2025-08-10 04:19:02 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:02 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:02 - INFO - Scheduler initialized
+2025-08-10 04:19:03 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:03 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:03 - INFO - Scheduler initialized
+2025-08-10 04:19:04 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:04 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:04 - INFO - Scheduler initialized
+2025-08-10 04:19:05 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:05 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:05 - INFO - Scheduler initialized
+2025-08-10 04:19:06 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:06 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:06 - INFO - Scheduler initialized
+2025-08-10 04:19:07 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:07 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:07 - INFO - Scheduler initialized
+2025-08-10 04:19:08 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:08 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:08 - INFO - Scheduler initialized
+2025-08-10 04:19:09 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:09 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:09 - INFO - Scheduler initialized
+2025-08-10 04:19:10 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:10 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:10 - INFO - Scheduler initialized
+2025-08-10 04:19:11 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:11 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:11 - INFO - Scheduler initialized
+2025-08-10 04:19:12 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:12 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:12 - INFO - Scheduler initialized
+2025-08-10 04:19:13 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:13 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:13 - INFO - Scheduler initialized
+2025-08-10 04:19:14 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:14 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:14 - INFO - Scheduler initialized
+2025-08-10 04:19:15 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:15 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:15 - INFO - Scheduler initialized
+2025-08-10 04:19:16 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:16 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:16 - INFO - Scheduler initialized
+2025-08-10 04:19:17 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:17 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:17 - INFO - Scheduler initialized
+2025-08-10 04:19:18 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:18 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:18 - INFO - Scheduler initialized
+2025-08-10 04:19:19 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:19 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:19 - INFO - Scheduler initialized
+2025-08-10 04:19:42 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:42 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:42 - INFO - Scheduler initialized
+2025-08-10 04:19:43 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:43 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:43 - INFO - Scheduler initialized
+2025-08-10 04:19:44 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:44 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:44 - INFO - Scheduler initialized
+2025-08-10 04:19:45 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:45 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:45 - INFO - Scheduler initialized
+2025-08-10 04:19:46 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:46 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:46 - INFO - Scheduler initialized
+2025-08-10 04:19:47 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:47 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:47 - INFO - Scheduler initialized
+2025-08-10 04:19:48 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:48 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:48 - INFO - Scheduler initialized
+2025-08-10 04:19:49 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:49 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:49 - INFO - Scheduler initialized
+2025-08-10 04:19:50 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:50 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:50 - INFO - Scheduler initialized
+2025-08-10 04:19:51 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:51 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:51 - INFO - Scheduler initialized
+2025-08-10 04:19:52 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:52 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:52 - INFO - Scheduler initialized
+2025-08-10 04:19:53 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:53 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:53 - INFO - Scheduler initialized
+2025-08-10 04:19:54 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:54 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:54 - INFO - Scheduler initialized
+2025-08-10 04:19:55 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:55 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:55 - INFO - Scheduler initialized
+2025-08-10 04:19:56 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:56 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:56 - INFO - Scheduler initialized
+2025-08-10 04:19:57 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:57 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:57 - INFO - Scheduler initialized
+2025-08-10 04:19:58 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:58 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:58 - INFO - Scheduler initialized
+2025-08-10 04:19:59 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:19:59 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:19:59 - INFO - Scheduler initialized
+2025-08-10 04:20:00 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:00 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:20:00 - INFO - Scheduler initialized
+2025-08-10 04:20:01 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:01 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:20:01 - INFO - Scheduler initialized
+2025-08-10 04:20:02 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:02 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:20:02 - INFO - Scheduler initialized
+2025-08-10 04:20:03 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:03 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:20:03 - INFO - Scheduler initialized
+2025-08-10 04:20:04 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:04 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:20:04 - INFO - Scheduler initialized
+2025-08-10 04:20:05 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:05 - WARNING - Couldn't read email time from email_config.json: [Errno 2] No such file or directory: 'email_config.json'
+2025-08-10 04:20:05 - INFO - Scheduler initialized
+2025-08-10 04:20:16 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:16 - INFO - Scheduler initialized
+2025-08-10 04:20:17 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:17 - INFO - Scheduler initialized
+2025-08-10 04:20:18 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:18 - INFO - Scheduler initialized
+2025-08-10 04:20:19 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:19 - INFO - Scheduler initialized
+2025-08-10 04:20:20 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:20 - INFO - Scheduler initialized
+2025-08-10 04:20:21 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:21 - INFO - Scheduler initialized
+2025-08-10 04:20:22 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:22 - INFO - Scheduler initialized
+2025-08-10 04:20:23 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:23 - INFO - Scheduler initialized
+2025-08-10 04:20:24 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:24 - INFO - Scheduler initialized
+2025-08-10 04:20:25 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:25 - INFO - Scheduler initialized
+2025-08-10 04:20:26 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:26 - INFO - Scheduler initialized
+2025-08-10 04:20:27 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:27 - INFO - Scheduler initialized
+2025-08-10 04:20:28 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:28 - INFO - Scheduler initialized
+2025-08-10 04:20:29 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:29 - INFO - Scheduler initialized
+2025-08-10 04:20:30 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:30 - INFO - Scheduler initialized
+2025-08-10 04:20:31 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:31 - INFO - Scheduler initialized
+2025-08-10 04:20:32 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:32 - INFO - Scheduler initialized
+2025-08-10 04:20:33 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:33 - INFO - Scheduler initialized
+2025-08-10 04:20:34 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:34 - INFO - Scheduler initialized
+2025-08-10 04:20:35 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:20:35 - INFO - Scheduler initialized
+2025-08-10 04:23:09 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:09 - INFO - Scheduler initialized
+2025-08-10 04:23:10 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:10 - INFO - Scheduler initialized
+2025-08-10 04:23:11 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:11 - INFO - Scheduler initialized
+2025-08-10 04:23:12 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:12 - INFO - Scheduler initialized
+2025-08-10 04:23:13 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:13 - INFO - Scheduler initialized
+2025-08-10 04:23:40 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:40 - INFO - Scheduler initialized
+2025-08-10 04:23:41 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:41 - INFO - Scheduler initialized
+2025-08-10 04:23:42 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:42 - INFO - Scheduler initialized
+2025-08-10 04:23:43 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:43 - INFO - Scheduler initialized
+2025-08-10 04:23:44 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:44 - INFO - Scheduler initialized
+2025-08-10 04:23:45 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:45 - INFO - Scheduler initialized
+2025-08-10 04:23:46 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:46 - INFO - Scheduler initialized
+2025-08-10 04:23:47 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:47 - INFO - Scheduler initialized
+2025-08-10 04:23:48 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:48 - INFO - Scheduler initialized
+2025-08-10 04:23:49 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:49 - INFO - Scheduler initialized
+2025-08-10 04:23:50 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:50 - INFO - Scheduler initialized
+2025-08-10 04:23:51 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:51 - INFO - Scheduler initialized
+2025-08-10 04:23:52 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:52 - INFO - Scheduler initialized
+2025-08-10 04:23:53 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:53 - INFO - Scheduler initialized
+2025-08-10 04:23:54 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:54 - INFO - Scheduler initialized
+2025-08-10 04:23:55 - INFO - Loaded configuration from scheduler_config.json
+2025-08-10 04:23:55 - INFO - Scheduler initialized
