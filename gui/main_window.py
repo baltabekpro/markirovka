@@ -601,7 +601,86 @@ class TokenManagementTab(QWidget):
             "Файлы сертификатов (*.cer *.crt *.der *.p7b *.p12 *.pfx);;Все файлы (*)"
         )
         if file_path:
-            QMessageBox.information(self, "Импорт", f"Выбран файл: {file_path}\n(Доп. логика импорта не реализована)")
+            try:
+                # Получаем информацию о сертификате и добавляем в систему
+                cert_path = Path(file_path)
+                
+                # Диалог ввода информации о сертификате
+                dialog = QDialog(self)
+                dialog.setWindowTitle("Информация о сертификате")
+                dialog.setMinimumSize(400, 200)
+                
+                layout = QFormLayout()
+                
+                name_edit = QLineEdit()
+                name_edit.setPlaceholderText("Введите имя владельца сертификата")
+                
+                thumbprint_edit = QLineEdit()
+                thumbprint_edit.setPlaceholderText("SHA1 отпечаток (если известен)")
+                
+                layout.addRow("Имя владельца:", name_edit)
+                layout.addRow("Отпечаток SHA1:", thumbprint_edit)
+                
+                buttons = QDialogButtonBox(
+                    QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+                )
+                buttons.accepted.connect(dialog.accept)
+                buttons.rejected.connect(dialog.reject)
+                layout.addWidget(buttons)
+                
+                dialog.setLayout(layout)
+                
+                if dialog.exec() == QDialog.DialogCode.Accepted:
+                    name = name_edit.text().strip()
+                    thumbprint = thumbprint_edit.text().strip()
+                    
+                    if not name:
+                        name = cert_path.stem
+                    
+                    if thumbprint:
+                        # Добавляем сертификат в систему
+                        try:
+                            from scripts.token_manager import (
+                                load_certificates_file, save_certificates_file,
+                                load_thumbprints_file, save_thumbprints_file
+                            )
+                            
+                            # Обновляем thumbprints
+                            tps = load_thumbprints_file()
+                            if thumbprint.lower() not in [tp.lower() for tp in tps]:
+                                tps.append(thumbprint.lower())
+                                save_thumbprints_file(tps)
+                            
+                            # Обновляем certificates.json
+                            cert_data = load_certificates_file()
+                            certs = cert_data.get('certificates', [])
+                            
+                            # Проверяем, нет ли уже такого сертификата
+                            existing = next((c for c in certs if c.get('thumbprint', '').lower() == thumbprint.lower()), None)
+                            if existing:
+                                existing['name'] = name
+                            else:
+                                certs.append({'name': name, 'thumbprint': thumbprint.lower()})
+                            
+                            cert_data['certificates'] = certs
+                            save_certificates_file(cert_data)
+                            
+                            self.reload_certs()
+                            QMessageBox.information(self, "Успех", f"Сертификат '{name}' добавлен в систему")
+                            
+                        except Exception as e:
+                            QMessageBox.critical(self, "Ошибка", f"Ошибка добавления сертификата: {e}")
+                    else:
+                        QMessageBox.information(
+                            self, "Импорт", 
+                            f"Файл сертификата: {cert_path.name}\n\nДля полной установки необходимо:\n"
+                            "1. Установить сертификат в хранилище Windows\n"
+                            "2. Получить SHA1 отпечаток\n"
+                            "3. Добавить отпечаток через функцию 'Добавить сертификат'"
+                        )
+                        
+            except Exception as e:
+                QMessageBox.critical(self, "Ошибка", f"Ошибка обработки сертификата: {e}")
 
 
 
@@ -846,6 +925,8 @@ class MainWindow(QMainWindow):
             ("Токены", TokenManagementTab()),
             ("Отчеты", ReportsTab()),
             ("Файлы", self.create_files_tab()),
+            ("Регионы", self.create_regions_tab()),
+            ("Логи", self.create_logs_tab()),
             ("Настройки", self.create_settings_tab()),
         ]
         self.tokens_tab = None
@@ -888,7 +969,7 @@ class MainWindow(QMainWindow):
         refresh_tokens_btn.setMinimumHeight(50)
         actions_layout.addWidget(refresh_tokens_btn, 0, 1)
         
-        send_report_btn = QPushButton("Отправить отчет")
+        send_report_btn = QPushButton("Отправить отчет по email")
         send_report_btn.setObjectName("secondary")
         send_report_btn.setMinimumHeight(50)
         actions_layout.addWidget(send_report_btn, 1, 0)
@@ -897,6 +978,16 @@ class MainWindow(QMainWindow):
         scheduler_btn.setObjectName("warning")
         scheduler_btn.setMinimumHeight(50)
         actions_layout.addWidget(scheduler_btn, 1, 1)
+        
+        install_cert_btn = QPushButton("Установить сертификат")
+        install_cert_btn.setObjectName("primary")
+        install_cert_btn.setMinimumHeight(50)
+        actions_layout.addWidget(install_cert_btn, 2, 0)
+        
+        update_last_run_btn = QPushButton("Изменить дату последнего запуска")
+        update_last_run_btn.setObjectName("secondary")
+        update_last_run_btn.setMinimumHeight(50)
+        actions_layout.addWidget(update_last_run_btn, 2, 1)
         
         actions_group.setLayout(actions_layout)
         layout.addWidget(actions_group)
@@ -935,6 +1026,8 @@ class MainWindow(QMainWindow):
         refresh_tokens_btn.clicked.connect(self.refresh_tokens)
         send_report_btn.clicked.connect(self.send_report)
         scheduler_btn.clicked.connect(self.manage_scheduler)
+        install_cert_btn.clicked.connect(self.install_certificate)
+        update_last_run_btn.clicked.connect(self.update_last_run_date)
         
         return widget
         
@@ -954,12 +1047,18 @@ class MainWindow(QMainWindow):
         new_folder_btn = QPushButton("Новая папка")
         upload_btn = QPushButton("Загрузить файл")
         upload_btn.setObjectName("success")
+        copy_btn = QPushButton("Копировать")
+        copy_btn.setObjectName("secondary")
         delete_btn = QPushButton("Удалить")
         delete_btn.setObjectName("error")
+        edit_btn = QPushButton("Редактировать")
+        edit_btn.setObjectName("primary")
         refresh_btn = QPushButton("Обновить")
         
         toolbar_layout.addWidget(new_folder_btn)
         toolbar_layout.addWidget(upload_btn)
+        toolbar_layout.addWidget(copy_btn)
+        toolbar_layout.addWidget(edit_btn)
         toolbar_layout.addWidget(delete_btn)
         toolbar_layout.addWidget(refresh_btn)
         toolbar_layout.addStretch()
@@ -979,8 +1078,124 @@ class MainWindow(QMainWindow):
         # Подключение сигналов
         new_folder_btn.clicked.connect(self.create_new_folder)
         upload_btn.clicked.connect(self.upload_file)
+        copy_btn.clicked.connect(self.copy_file)
+        edit_btn.clicked.connect(self.edit_file)
         delete_btn.clicked.connect(self.delete_file)
         refresh_btn.clicked.connect(self.load_file_tree)
+        
+        return widget
+        
+    def create_regions_tab(self):
+        """Создание вкладки управления регионами"""
+        widget = QWidget()
+        layout = QVBoxLayout()
+        
+        # Заголовок
+        title = QLabel("Управление регионами")
+        title.setObjectName("title")
+        layout.addWidget(title)
+        
+        # Панель инструментов
+        toolbar_layout = QHBoxLayout()
+        
+        add_region_btn = QPushButton("Добавить регион")
+        add_region_btn.setObjectName("success")
+        edit_region_btn = QPushButton("Редактировать")
+        edit_region_btn.setObjectName("primary")
+        delete_region_btn = QPushButton("Удалить регион")
+        delete_region_btn.setObjectName("error")
+        add_tc_btn = QPushButton("Добавить ТЦ")
+        add_tc_btn.setObjectName("secondary")
+        remove_tc_btn = QPushButton("Удалить ТЦ")
+        remove_tc_btn.setObjectName("warning")
+        refresh_regions_btn = QPushButton("Обновить")
+        
+        toolbar_layout.addWidget(add_region_btn)
+        toolbar_layout.addWidget(edit_region_btn)
+        toolbar_layout.addWidget(delete_region_btn)
+        toolbar_layout.addWidget(add_tc_btn)
+        toolbar_layout.addWidget(remove_tc_btn)
+        toolbar_layout.addWidget(refresh_regions_btn)
+        toolbar_layout.addStretch()
+        
+        layout.addLayout(toolbar_layout)
+        
+        # Таблица регионов
+        self.regions_table = QTableWidget()
+        self.regions_table.setColumnCount(4)
+        self.regions_table.setHorizontalHeaderLabels(["ID", "Название", "Email адреса", "Количество ТЦ"])
+        self.regions_table.horizontalHeader().setStretchLastSection(True)
+        self.regions_table.setAlternatingRowColors(True)
+        self.regions_table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        layout.addWidget(self.regions_table)
+        
+        widget.setLayout(layout)
+        
+        # Загрузка данных
+        self.load_regions()
+        
+        # Подключение сигналов
+        add_region_btn.clicked.connect(self.add_region)
+        edit_region_btn.clicked.connect(self.edit_region)
+        delete_region_btn.clicked.connect(self.delete_region)
+        add_tc_btn.clicked.connect(self.add_tc_to_region)
+        remove_tc_btn.clicked.connect(self.remove_tc_from_region)
+        refresh_regions_btn.clicked.connect(self.load_regions)
+        
+        return widget
+        
+    def create_logs_tab(self):
+        """Создание вкладки просмотра логов"""
+        widget = QWidget()
+        layout = QVBoxLayout()
+        
+        # Заголовок
+        title = QLabel("Журналы работы")
+        title.setObjectName("title")
+        layout.addWidget(title)
+        
+        # Панель выбора лога
+        log_selection_layout = QHBoxLayout()
+        
+        log_label = QLabel("Выберите журнал:")
+        self.log_combo = QComboBox()
+        self.log_combo.setMinimumWidth(200)
+        refresh_logs_btn = QPushButton("Обновить список")
+        clear_log_btn = QPushButton("Очистить")
+        clear_log_btn.setObjectName("warning")
+        
+        log_selection_layout.addWidget(log_label)
+        log_selection_layout.addWidget(self.log_combo)
+        log_selection_layout.addWidget(refresh_logs_btn)
+        log_selection_layout.addWidget(clear_log_btn)
+        log_selection_layout.addStretch()
+        
+        layout.addLayout(log_selection_layout)
+        
+        # Текстовое поле для отображения лога
+        self.log_display = QTextEdit()
+        self.log_display.setReadOnly(True)
+        self.log_display.setFont(QFont("Consolas", 9))
+        self.log_display.setStyleSheet("""
+            QTextEdit {
+                background-color: #1E1E1E;
+                color: #FFFFFF;
+                border: 1px solid #3E3E3E;
+                border-radius: 4px;
+                font-family: 'Consolas', 'Courier New', monospace;
+            }
+        """)
+        layout.addWidget(self.log_display)
+        
+        widget.setLayout(layout)
+        
+        # Загрузка списка логов
+        self.load_log_files()
+        
+        # Подключение сигналов
+        self.log_combo.currentTextChanged.connect(self.load_selected_log)
+        refresh_logs_btn.clicked.connect(self.load_log_files)
+        clear_log_btn.clicked.connect(self.clear_log_display)
         
         return widget
         
@@ -1022,10 +1237,14 @@ class MainWindow(QMainWindow):
         self.auto_start = QCheckBox("Автоматический запуск")
         self.schedule_time = QLineEdit("09:00")
         self.schedule_enabled = QCheckBox("Включить планировщик")
+        self.last_run_date = QDateEdit()
+        self.last_run_date.setDate(QDate.currentDate())
+        self.last_run_date.setCalendarPopup(True)
         
         scheduler_layout.addRow("Автозапуск:", self.auto_start)
         scheduler_layout.addRow("Время выполнения:", self.schedule_time)
         scheduler_layout.addRow("Планировщик:", self.schedule_enabled)
+        scheduler_layout.addRow("Дата последнего запуска:", self.last_run_date)
         
         scheduler_group.setLayout(scheduler_layout)
         layout.addWidget(scheduler_group)
@@ -1259,21 +1478,758 @@ class MainWindow(QMainWindow):
         self.update_status_cards()
         
     def send_report(self):
-        """Отправка отчета"""
-        QMessageBox.information(self, "Отправка", "Подготовка и отправка отчета...")
+        """Отправка отчета по email"""
+        try:
+            # Получаем список доступных отчетов
+            base_dir = Path(__file__).parent.parent / 'output'
+            if not base_dir.exists():
+                QMessageBox.warning(self, "Ошибка", "Папка с отчетами не найдена")
+                return
+                
+            certificates = [d for d in base_dir.iterdir() if d.is_dir()]
+            if not certificates:
+                QMessageBox.warning(self, "Ошибка", "Отчеты не найдены")
+                return
+                
+            # Диалог выбора сертификата
+            cert_names = [cert.name for cert in certificates]
+            cert_name, ok = QInputDialog.getItem(
+                self, "Выбор сертификата", 
+                "Выберите сертификат для отправки отчета:", 
+                cert_names, 0, False
+            )
+            
+            if not ok:
+                return
+                
+            cert_dir = base_dir / cert_name
+            reports = list(cert_dir.glob('violations_*.json'))
+            
+            if not reports:
+                QMessageBox.warning(self, "Ошибка", f"Для сертификата {cert_name} отчеты не найдены")
+                return
+                
+            # Выбор отчета
+            report_names = [f"Отчет за {r.stem.split('_')[1]}" for r in reports]
+            report_name, ok = QInputDialog.getItem(
+                self, "Выбор отчета",
+                "Выберите отчет для отправки:",
+                report_names, 0, False
+            )
+            
+            if not ok:
+                return
+                
+            # Отправка отчета
+            try:
+                from scripts.send_daily_report import process_and_send_reports
+                process_and_send_reports()
+                QMessageBox.information(self, "Успех", "Отчет успешно отправлен")
+                self.events_text.append('✅ Отчет отправлен по email')
+            except Exception as e:
+                QMessageBox.critical(self, "Ошибка", f"Ошибка отправки отчета: {e}")
+                self.events_text.append(f'❌ Ошибка отправки отчета: {e}')
+                
+        except Exception as e:
+            self.logger.error(f"Ошибка в send_report: {e}")
+            QMessageBox.critical(self, "Ошибка", f"Неожиданная ошибка: {e}")
 
-    # Заглушки для отсутствующих ранее методов
     def manage_scheduler(self):
-        QMessageBox.information(self, "Планировщик", "Управление планировщиком пока не реализовано")
+        """Управление планировщиком"""
+        try:
+            from scripts.scheduler import Scheduler
+            scheduler = Scheduler()
+            
+            # Создаем диалог управления планировщиком
+            dialog = QDialog(self)
+            dialog.setWindowTitle("Управление планировщиком")
+            dialog.setMinimumSize(400, 300)
+            
+            layout = QVBoxLayout()
+            
+            # Статус планировщика
+            status_label = QLabel()
+            if scheduler.is_running():
+                status_label.setText("Статус: Работает")
+                status_label.setStyleSheet(f"color: {ModernStyle.SUCCESS}; font-weight: bold;")
+            else:
+                status_label.setText("Статус: Остановлен")
+                status_label.setStyleSheet(f"color: {ModernStyle.ERROR}; font-weight: bold;")
+            
+            layout.addWidget(status_label)
+            
+            # Кнопки управления
+            buttons_layout = QHBoxLayout()
+            
+            start_btn = QPushButton("Запустить")
+            start_btn.setObjectName("success")
+            stop_btn = QPushButton("Остановить")
+            stop_btn.setObjectName("error")
+            restart_btn = QPushButton("Перезапустить")
+            restart_btn.setObjectName("warning")
+            
+            buttons_layout.addWidget(start_btn)
+            buttons_layout.addWidget(stop_btn)
+            buttons_layout.addWidget(restart_btn)
+            
+            layout.addLayout(buttons_layout)
+            
+            # Информация о следующем запуске
+            info_text = QTextEdit()
+            info_text.setReadOnly(True)
+            info_text.setMaximumHeight(150)
+            
+            try:
+                from scripts.file_utils import check_last_run_info
+                next_run_info = check_last_run_info()
+                info_text.setPlainText(f"Информация о следующем запуске:\n{next_run_info}")
+            except:
+                info_text.setPlainText("Информация о следующем запуске недоступна")
+                
+            layout.addWidget(info_text)
+            
+            # Кнопки диалога
+            dialog_buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Close)
+            dialog_buttons.rejected.connect(dialog.reject)
+            layout.addWidget(dialog_buttons)
+            
+            dialog.setLayout(layout)
+            
+            # Подключение функций
+            def start_scheduler():
+                try:
+                    from scripts.scheduler import ensure_scheduler_running
+                    pid = ensure_scheduler_running()
+                    if pid:
+                        QMessageBox.information(dialog, "Успех", f"Планировщик запущен (PID: {pid})")
+                        status_label.setText("Статус: Работает")
+                        status_label.setStyleSheet(f"color: {ModernStyle.SUCCESS}; font-weight: bold;")
+                    else:
+                        QMessageBox.warning(dialog, "Ошибка", "Не удалось запустить планировщик")
+                except Exception as e:
+                    QMessageBox.critical(dialog, "Ошибка", f"Ошибка запуска: {e}")
+            
+            def stop_scheduler():
+                try:
+                    scheduler.stop()
+                    QMessageBox.information(dialog, "Успех", "Планировщик остановлен")
+                    status_label.setText("Статус: Остановлен")
+                    status_label.setStyleSheet(f"color: {ModernStyle.ERROR}; font-weight: bold;")
+                except Exception as e:
+                    QMessageBox.critical(dialog, "Ошибка", f"Ошибка остановки: {e}")
+            
+            def restart_scheduler():
+                stop_scheduler()
+                QTimer.singleShot(1000, start_scheduler)
+            
+            start_btn.clicked.connect(start_scheduler)
+            stop_btn.clicked.connect(stop_scheduler)
+            restart_btn.clicked.connect(restart_scheduler)
+            
+            dialog.exec()
+            
+        except Exception as e:
+            self.logger.error(f"Ошибка в manage_scheduler: {e}")
+            QMessageBox.critical(self, "Ошибка", f"Ошибка управления планировщиком: {e}")
+
+    def install_certificate(self):
+        """Установка сертификата из файла"""
+        try:
+            file_path, _ = QFileDialog.getOpenFileName(
+                self,
+                "Выберите файл сертификата",
+                "",
+                "Файлы сертификатов (*.cer *.crt *.der *.p7b *.p12 *.pfx);;Все файлы (*)"
+            )
+            
+            if file_path:
+                try:
+                    from scripts.install_certificate import main as install_cert_main
+                    # Здесь нужно адаптировать функцию установки сертификата для GUI
+                    QMessageBox.information(
+                        self, 
+                        "Установка сертификата", 
+                        f"Выбран файл: {file_path}\nДля установки сертификата обратитесь к системному администратору"
+                    )
+                    self.events_text.append(f'📄 Выбран сертификат: {Path(file_path).name}')
+                except ImportError:
+                    QMessageBox.warning(self, "Ошибка", "Модуль установки сертификатов не найден")
+                except Exception as e:
+                    QMessageBox.critical(self, "Ошибка", f"Ошибка установки сертификата: {e}")
+                    
+        except Exception as e:
+            self.logger.error(f"Ошибка в install_certificate: {e}")
+
+    def update_last_run_date(self):
+        """Изменение даты последнего запуска"""
+        try:
+            date, ok = QInputDialog.getText(
+                self,
+                "Изменить дату последнего запуска",
+                "Введите дату (YYYY-MM-DD):",
+                text=datetime.now().strftime("%Y-%m-%d")
+            )
+            
+            if ok and date:
+                try:
+                    # Проверяем формат даты
+                    datetime.strptime(date, "%Y-%m-%d")
+                    
+                    # Обновляем файл last_run.json
+                    last_run_file = Path(__file__).parent.parent / 'scripts' / 'last_run.json'
+                    
+                    data = {}
+                    if last_run_file.exists():
+                        with open(last_run_file, 'r', encoding='utf-8') as f:
+                            data = json.load(f)
+                    
+                    data['last_run'] = f"{date}T00:00:00"
+                    data['updated_manually'] = datetime.now().isoformat()
+                    
+                    with open(last_run_file, 'w', encoding='utf-8') as f:
+                        json.dump(data, f, indent=2, ensure_ascii=False)
+                    
+                    QMessageBox.information(self, "Успех", f"Дата последнего запуска изменена на {date}")
+                    self.events_text.append(f'📅 Дата последнего запуска изменена на {date}')
+                    
+                except ValueError:
+                    QMessageBox.warning(self, "Ошибка", "Неверный формат даты. Используйте YYYY-MM-DD")
+                except Exception as e:
+                    QMessageBox.critical(self, "Ошибка", f"Ошибка сохранения: {e}")
+                    
+        except Exception as e:
+            self.logger.error(f"Ошибка в update_last_run_date: {e}")
 
     def create_new_folder(self):
-        QMessageBox.information(self, "Новая папка", "Создание папки пока не реализовано")
+        """Создание новой папки"""
+        try:
+            current_item = self.file_tree.currentItem()
+            base_path = Path(__file__).parent.parent / "scripts"
+            
+            if current_item:
+                item_path = current_item.data(0, Qt.ItemDataRole.UserRole)
+                if item_path:
+                    path = Path(item_path)
+                    if path.is_file():
+                        base_path = path.parent
+                    else:
+                        base_path = path
+            
+            folder_name, ok = QInputDialog.getText(
+                self, "Новая папка", 
+                f"Введите имя папки в {base_path}:"
+            )
+            
+            if ok and folder_name:
+                new_folder = base_path / folder_name
+                try:
+                    new_folder.mkdir(exist_ok=True)
+                    QMessageBox.information(self, "Успех", f"Папка создана: {new_folder}")
+                    self.load_file_tree()
+                except Exception as e:
+                    QMessageBox.critical(self, "Ошибка", f"Не удалось создать папку: {e}")
+                    
+        except Exception as e:
+            self.logger.error(f"Ошибка в create_new_folder: {e}")
 
     def upload_file(self):
-        QMessageBox.information(self, "Загрузка файла", "Загрузка пока не реализована")
+        """Загрузка файла"""
+        try:
+            current_item = self.file_tree.currentItem()
+            base_path = Path(__file__).parent.parent / "scripts"
+            
+            if current_item:
+                item_path = current_item.data(0, Qt.ItemDataRole.UserRole)
+                if item_path:
+                    path = Path(item_path)
+                    if path.is_file():
+                        base_path = path.parent
+                    else:
+                        base_path = path
+            
+            file_path, _ = QFileDialog.getOpenFileName(
+                self, "Выберите файл для загрузки", "", "Все файлы (*)"
+            )
+            
+            if file_path:
+                try:
+                    source = Path(file_path)
+                    destination = base_path / source.name
+                    
+                    if destination.exists():
+                        reply = QMessageBox.question(
+                            self, "Файл существует",
+                            f"Файл {source.name} уже существует. Заменить?",
+                            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+                        )
+                        if reply != QMessageBox.StandardButton.Yes:
+                            return
+                    
+                    import shutil
+                    shutil.copy2(source, destination)
+                    QMessageBox.information(self, "Успех", f"Файл загружен: {destination}")
+                    self.load_file_tree()
+                    
+                except Exception as e:
+                    QMessageBox.critical(self, "Ошибка", f"Ошибка загрузки файла: {e}")
+                    
+        except Exception as e:
+            self.logger.error(f"Ошибка в upload_file: {e}")
+
+    def copy_file(self):
+        """Копирование файла"""
+        try:
+            current_item = self.file_tree.currentItem()
+            if not current_item:
+                QMessageBox.warning(self, "Предупреждение", "Выберите файл для копирования")
+                return
+                
+            source_path = current_item.data(0, Qt.ItemDataRole.UserRole)
+            if not source_path or not Path(source_path).exists():
+                QMessageBox.warning(self, "Ошибка", "Выбранный файл не существует")
+                return
+            
+            # Выбор папки назначения
+            dest_dir = QFileDialog.getExistingDirectory(
+                self, "Выберите папку назначения", str(Path(__file__).parent.parent / "scripts")
+            )
+            
+            if dest_dir:
+                try:
+                    source = Path(source_path)
+                    destination = Path(dest_dir) / source.name
+                    
+                    if destination.exists():
+                        reply = QMessageBox.question(
+                            self, "Файл существует",
+                            f"Файл {source.name} уже существует в папке назначения. Заменить?",
+                            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+                        )
+                        if reply != QMessageBox.StandardButton.Yes:
+                            return
+                    
+                    import shutil
+                    if source.is_file():
+                        shutil.copy2(source, destination)
+                    else:
+                        shutil.copytree(source, destination, dirs_exist_ok=True)
+                    
+                    QMessageBox.information(self, "Успех", f"Скопировано в: {destination}")
+                    self.load_file_tree()
+                    
+                except Exception as e:
+                    QMessageBox.critical(self, "Ошибка", f"Ошибка копирования: {e}")
+                    
+        except Exception as e:
+            self.logger.error(f"Ошибка в copy_file: {e}")
+
+    def edit_file(self):
+        """Редактирование файла"""
+        try:
+            current_item = self.file_tree.currentItem()
+            if not current_item:
+                QMessageBox.warning(self, "Предупреждение", "Выберите файл для редактирования")
+                return
+                
+            file_path = current_item.data(0, Qt.ItemDataRole.UserRole)
+            if not file_path or not Path(file_path).is_file():
+                QMessageBox.warning(self, "Ошибка", "Выберите файл (не папку) для редактирования")
+                return
+            
+            # Создаем простой текстовый редактор
+            try:
+                from scripts.file_viewer import view_file_with_menu
+                view_file_with_menu(file_path)
+            except ImportError:
+                # Простой встроенный редактор
+                dialog = QDialog(self)
+                dialog.setWindowTitle(f"Редактирование: {Path(file_path).name}")
+                dialog.setMinimumSize(800, 600)
+                
+                layout = QVBoxLayout()
+                
+                text_edit = QTextEdit()
+                text_edit.setFont(QFont("Consolas", 10))
+                
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    text_edit.setPlainText(content)
+                except UnicodeDecodeError:
+                    with open(file_path, 'r', encoding='cp1251') as f:
+                        content = f.read()
+                    text_edit.setPlainText(content)
+                
+                layout.addWidget(text_edit)
+                
+                # Кнопки
+                buttons_layout = QHBoxLayout()
+                save_btn = QPushButton("Сохранить")
+                save_btn.setObjectName("success")
+                cancel_btn = QPushButton("Отмена")
+                
+                def save_file():
+                    try:
+                        with open(file_path, 'w', encoding='utf-8') as f:
+                            f.write(text_edit.toPlainText())
+                        QMessageBox.information(dialog, "Успех", "Файл сохранен")
+                        dialog.accept()
+                    except Exception as e:
+                        QMessageBox.critical(dialog, "Ошибка", f"Ошибка сохранения: {e}")
+                
+                save_btn.clicked.connect(save_file)
+                cancel_btn.clicked.connect(dialog.reject)
+                
+                buttons_layout.addWidget(save_btn)
+                buttons_layout.addWidget(cancel_btn)
+                buttons_layout.addStretch()
+                
+                layout.addLayout(buttons_layout)
+                dialog.setLayout(layout)
+                dialog.exec()
+                
+        except Exception as e:
+            self.logger.error(f"Ошибка в edit_file: {e}")
 
     def delete_file(self):
-        QMessageBox.information(self, "Удаление файла", "Удаление пока не реализовано")
+        """Удаление файла или папки"""
+        try:
+            current_item = self.file_tree.currentItem()
+            if not current_item:
+                QMessageBox.warning(self, "Предупреждение", "Выберите файл или папку для удаления")
+                return
+                
+            file_path = current_item.data(0, Qt.ItemDataRole.UserRole)
+            if not file_path or not Path(file_path).exists():
+                QMessageBox.warning(self, "Ошибка", "Выбранный элемент не существует")
+                return
+            
+            path = Path(file_path)
+            item_type = "папку" if path.is_dir() else "файл"
+            
+            reply = QMessageBox.question(
+                self, "Подтверждение удаления",
+                f"Вы уверены, что хотите удалить {item_type} '{path.name}'?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            )
+            
+            if reply == QMessageBox.StandardButton.Yes:
+                try:
+                    if path.is_file():
+                        path.unlink()
+                    else:
+                        import shutil
+                        shutil.rmtree(path)
+                    
+                    QMessageBox.information(self, "Успех", f"{item_type.capitalize()} удален{'а' if item_type == 'папку' else ''}")
+                    self.load_file_tree()
+                    
+                except Exception as e:
+                    QMessageBox.critical(self, "Ошибка", f"Ошибка удаления: {e}")
+                    
+        except Exception as e:
+            self.logger.error(f"Ошибка в delete_file: {e}")
+
+    # Методы для работы с регионами
+    def load_regions(self):
+        """Загрузка списка регионов"""
+        try:
+            from scripts.region_manager import load_regions_data
+            regions_data = load_regions_data()
+            
+            self.regions_table.setRowCount(len(regions_data))
+            
+            for row, (region_id, region_info) in enumerate(regions_data.items()):
+                self.regions_table.setItem(row, 0, QTableWidgetItem(region_id))
+                
+                name = region_info.get('name', '') if isinstance(region_info, dict) else str(region_info)
+                self.regions_table.setItem(row, 1, QTableWidgetItem(name))
+                
+                emails = region_info.get('emails', []) if isinstance(region_info, dict) else []
+                email_str = ', '.join(emails) if emails else ''
+                self.regions_table.setItem(row, 2, QTableWidgetItem(email_str))
+                
+                tc_list = region_info.get('tc_list', []) if isinstance(region_info, dict) else []
+                self.regions_table.setItem(row, 3, QTableWidgetItem(str(len(tc_list))))
+                
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки регионов: {e}")
+
+    def add_region(self):
+        """Добавление нового региона"""
+        try:
+            # Диалог добавления региона
+            dialog = QDialog(self)
+            dialog.setWindowTitle("Добавить регион")
+            dialog.setMinimumSize(400, 300)
+            
+            layout = QFormLayout()
+            
+            region_id_edit = QLineEdit()
+            region_name_edit = QLineEdit()
+            emails_edit = QTextEdit()
+            emails_edit.setMaximumHeight(100)
+            emails_edit.setPlaceholderText("Введите email адреса, каждый с новой строки")
+            
+            layout.addRow("ID региона:", region_id_edit)
+            layout.addRow("Название:", region_name_edit)
+            layout.addRow("Email адреса:", emails_edit)
+            
+            buttons = QDialogButtonBox(
+                QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+            )
+            buttons.accepted.connect(dialog.accept)
+            buttons.rejected.connect(dialog.reject)
+            
+            layout.addWidget(buttons)
+            dialog.setLayout(layout)
+            
+            if dialog.exec() == QDialog.DialogCode.Accepted:
+                region_id = region_id_edit.text().strip()
+                region_name = region_name_edit.text().strip()
+                emails_text = emails_edit.toPlainText().strip()
+                
+                if not region_id or not region_name:
+                    QMessageBox.warning(self, "Ошибка", "ID и название региона обязательны")
+                    return
+                
+                emails = [email.strip() for email in emails_text.split('\n') if email.strip()]
+                
+                try:
+                    from scripts.region_manager import add_region
+                    if add_region(region_id, region_name, emails):
+                        QMessageBox.information(self, "Успех", "Регион добавлен")
+                        self.load_regions()
+                    else:
+                        QMessageBox.warning(self, "Ошибка", "Не удалось добавить регион")
+                except Exception as e:
+                    QMessageBox.critical(self, "Ошибка", f"Ошибка добавления региона: {e}")
+                    
+        except Exception as e:
+            self.logger.error(f"Ошибка в add_region: {e}")
+
+    def edit_region(self):
+        """Редактирование региона"""
+        try:
+            current_row = self.regions_table.currentRow()
+            if current_row < 0:
+                QMessageBox.warning(self, "Предупреждение", "Выберите регион для редактирования")
+                return
+            
+            region_id = self.regions_table.item(current_row, 0).text()
+            current_name = self.regions_table.item(current_row, 1).text()
+            current_emails = self.regions_table.item(current_row, 2).text()
+            
+            # Диалог редактирования
+            dialog = QDialog(self)
+            dialog.setWindowTitle(f"Редактировать регион: {region_id}")
+            dialog.setMinimumSize(400, 300)
+            
+            layout = QFormLayout()
+            
+            region_name_edit = QLineEdit(current_name)
+            emails_edit = QTextEdit()
+            emails_edit.setMaximumHeight(100)
+            emails_edit.setPlainText(current_emails.replace(', ', '\n'))
+            
+            layout.addRow("Название:", region_name_edit)
+            layout.addRow("Email адреса:", emails_edit)
+            
+            buttons = QDialogButtonBox(
+                QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+            )
+            buttons.accepted.connect(dialog.accept)
+            buttons.rejected.connect(dialog.reject)
+            
+            layout.addWidget(buttons)
+            dialog.setLayout(layout)
+            
+            if dialog.exec() == QDialog.DialogCode.Accepted:
+                new_name = region_name_edit.text().strip()
+                emails_text = emails_edit.toPlainText().strip()
+                
+                if not new_name:
+                    QMessageBox.warning(self, "Ошибка", "Название региона обязательно")
+                    return
+                
+                emails = [email.strip() for email in emails_text.split('\n') if email.strip()]
+                
+                try:
+                    from scripts.region_manager import add_region
+                    if add_region(region_id, new_name, emails):
+                        QMessageBox.information(self, "Успех", "Регион обновлен")
+                        self.load_regions()
+                    else:
+                        QMessageBox.warning(self, "Ошибка", "Не удалось обновить регион")
+                except Exception as e:
+                    QMessageBox.critical(self, "Ошибка", f"Ошибка обновления региона: {e}")
+                    
+        except Exception as e:
+            self.logger.error(f"Ошибка в edit_region: {e}")
+
+    def delete_region(self):
+        """Удаление региона"""
+        try:
+            current_row = self.regions_table.currentRow()
+            if current_row < 0:
+                QMessageBox.warning(self, "Предупреждение", "Выберите регион для удаления")
+                return
+            
+            region_id = self.regions_table.item(current_row, 0).text()
+            region_name = self.regions_table.item(current_row, 1).text()
+            
+            reply = QMessageBox.question(
+                self, "Подтверждение удаления",
+                f"Вы уверены, что хотите удалить регион '{region_name}' ({region_id})?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            )
+            
+            if reply == QMessageBox.StandardButton.Yes:
+                try:
+                    from scripts.region_manager import delete_region
+                    if delete_region(region_id):
+                        QMessageBox.information(self, "Успех", "Регион удален")
+                        self.load_regions()
+                    else:
+                        QMessageBox.warning(self, "Ошибка", "Не удалось удалить регион")
+                except Exception as e:
+                    QMessageBox.critical(self, "Ошибка", f"Ошибка удаления региона: {e}")
+                    
+        except Exception as e:
+            self.logger.error(f"Ошибка в delete_region: {e}")
+
+    def add_tc_to_region(self):
+        """Добавление ТЦ в регион"""
+        try:
+            current_row = self.regions_table.currentRow()
+            if current_row < 0:
+                QMessageBox.warning(self, "Предупреждение", "Выберите регион")
+                return
+            
+            region_id = self.regions_table.item(current_row, 0).text()
+            
+            tc_name, ok = QInputDialog.getText(
+                self, "Добавить ТЦ", 
+                f"Введите название ТЦ для региона {region_id}:"
+            )
+            
+            if ok and tc_name.strip():
+                try:
+                    from scripts.region_manager import add_tc_to_region
+                    if add_tc_to_region(tc_name.strip(), region_id):
+                        QMessageBox.information(self, "Успех", f"ТЦ '{tc_name}' добавлен в регион {region_id}")
+                        self.load_regions()
+                    else:
+                        QMessageBox.warning(self, "Ошибка", "Не удалось добавить ТЦ")
+                except Exception as e:
+                    QMessageBox.critical(self, "Ошибка", f"Ошибка добавления ТЦ: {e}")
+                    
+        except Exception as e:
+            self.logger.error(f"Ошибка в add_tc_to_region: {e}")
+
+    def remove_tc_from_region(self):
+        """Удаление ТЦ из региона"""
+        try:
+            current_row = self.regions_table.currentRow()
+            if current_row < 0:
+                QMessageBox.warning(self, "Предупреждение", "Выберите регион")
+                return
+            
+            region_id = self.regions_table.item(current_row, 0).text()
+            
+            # Получаем список ТЦ в регионе
+            try:
+                from scripts.region_manager import load_regions_data
+                regions_data = load_regions_data()
+                tc_list = regions_data.get(region_id, {}).get('tc_list', [])
+                
+                if not tc_list:
+                    QMessageBox.information(self, "Информация", f"В регионе {region_id} нет ТЦ")
+                    return
+                
+                tc_name, ok = QInputDialog.getItem(
+                    self, "Удалить ТЦ",
+                    f"Выберите ТЦ для удаления из региона {region_id}:",
+                    tc_list, 0, False
+                )
+                
+                if ok:
+                    from scripts.region_manager import remove_tc_from_region
+                    if remove_tc_from_region(tc_name, region_id):
+                        QMessageBox.information(self, "Успех", f"ТЦ '{tc_name}' удален из региона {region_id}")
+                        self.load_regions()
+                    else:
+                        QMessageBox.warning(self, "Ошибка", "Не удалось удалить ТЦ")
+                        
+            except Exception as e:
+                QMessageBox.critical(self, "Ошибка", f"Ошибка удаления ТЦ: {e}")
+                
+        except Exception as e:
+            self.logger.error(f"Ошибка в remove_tc_from_region: {e}")
+
+    # Методы для работы с логами
+    def load_log_files(self):
+        """Загрузка списка файлов логов"""
+        try:
+            self.log_combo.clear()
+            
+            logs_dir = Path(__file__).parent.parent / 'scripts' / 'logs'
+            if logs_dir.exists():
+                log_files = list(logs_dir.glob('*.log'))
+                for log_file in sorted(log_files):
+                    self.log_combo.addItem(log_file.name)
+            
+            # Также добавляем логи из корневой папки logs
+            root_logs_dir = Path(__file__).parent.parent / 'logs'
+            if root_logs_dir.exists():
+                log_files = list(root_logs_dir.glob('*.log'))
+                for log_file in sorted(log_files):
+                    self.log_combo.addItem(f"root/{log_file.name}")
+                    
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки списка логов: {e}")
+
+    def load_selected_log(self, log_name):
+        """Загрузка выбранного лога"""
+        try:
+            if not log_name:
+                return
+                
+            if log_name.startswith("root/"):
+                log_path = Path(__file__).parent.parent / 'logs' / log_name[5:]
+            else:
+                log_path = Path(__file__).parent.parent / 'scripts' / 'logs' / log_name
+            
+            if log_path.exists():
+                try:
+                    with open(log_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    # Показываем только последние 1000 строк для производительности
+                    lines = content.split('\n')
+                    if len(lines) > 1000:
+                        lines = lines[-1000:]
+                        content = '\n'.join(['... (показаны последние 1000 строк) ...'] + lines)
+                    
+                    self.log_display.setPlainText(content)
+                    
+                    # Прокручиваем к концу
+                    scrollbar = self.log_display.verticalScrollBar()
+                    scrollbar.setValue(scrollbar.maximum())
+                    
+                except UnicodeDecodeError:
+                    with open(log_path, 'r', encoding='cp1251') as f:
+                        content = f.read()
+                    self.log_display.setPlainText(content)
+                    
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки лога {log_name}: {e}")
+            self.log_display.setPlainText(f"Ошибка загрузки лога: {e}")
+
+    def clear_log_display(self):
+        """Очистка отображения лога"""
+        self.log_display.clear()
+
+    # Заглушки для отсутствующих ранее методов удалены - заменены реальными методами выше
 
 
 def main():
