@@ -6,6 +6,7 @@
 import sys
 import os
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, Any
@@ -77,7 +78,7 @@ try:
     )
     from PyQt6.QtGui import (
         QFont, QIcon, QPalette, QColor, QPixmap, QPainter,
-        QLinearGradient, QBrush, QAction
+    QLinearGradient, QBrush, QAction
     )
 except ImportError:
     print("PyQt6 не установлен. Установите его командой: pip install PyQt6")
@@ -340,43 +341,45 @@ class CertInnEditorDialog(QDialog):
         self._build_ui()
 
     def _build_ui(self):
-        layout = QVBoxLayout(self)
+    layout = QVBoxLayout(self)
 
-        # Таблица пар
-        self.table = QTableWidget()
-        self.table.setColumnCount(2)
-        self.table.setHorizontalHeaderLabels(["ТС", "ИНН"])
-        self.table.horizontalHeader().setStretchLastSection(True)
-        self.table.setAlternatingRowColors(True)
-        layout.addWidget(self.table)
+    # Таблица пар
+    self.table = QTableWidget()
+    self.table.setColumnCount(2)
+    self.table.setHorizontalHeaderLabels(["ТС", "ИНН"])
+    self.table.horizontalHeader().setStretchLastSection(True)
+    self.table.setAlternatingRowColors(True)
+    layout.addWidget(self.table)
 
-        # Кнопки управления
-        controls = QHBoxLayout()
-        self.tc_edit = QLineEdit(); self.tc_edit.setPlaceholderText("тсNN")
-        self.inn_edit = QLineEdit(); self.inn_edit.setPlaceholderText("ИНН (можно пусто)")
-        add_btn = QPushButton("Добавить")
-        del_btn = QPushButton("Удалить выбранное")
-        clear_btn = QPushButton("Очистить")
-        controls.addWidget(self.tc_edit)
-        controls.addWidget(self.inn_edit)
-        controls.addWidget(add_btn)
-        controls.addWidget(del_btn)
-        controls.addWidget(clear_btn)
-        layout.addLayout(controls)
+    # Кнопки управления
+    controls = QHBoxLayout()
+    self.tc_edit = QLineEdit()
+    self.tc_edit.setPlaceholderText("тсNN (напр., тс25)")
+    self.inn_edit = QLineEdit()
+    self.inn_edit.setPlaceholderText("ИНН: 10 или 12 цифр (можно пусто)")
+    add_btn = QPushButton("Добавить")
+    del_btn = QPushButton("Удалить выбранное")
+    clear_btn = QPushButton("Очистить")
+    controls.addWidget(self.tc_edit)
+    controls.addWidget(self.inn_edit)
+    controls.addWidget(add_btn)
+    controls.addWidget(del_btn)
+    controls.addWidget(clear_btn)
+    layout.addLayout(controls)
 
-        # Кнопки Ok/Cancel
-        btns = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
-        layout.addWidget(btns)
+    # Кнопки Ok/Cancel
+    btns = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+    layout.addWidget(btns)
 
-        # Сигналы
-        add_btn.clicked.connect(self._on_add)
-        del_btn.clicked.connect(self._on_delete)
-        clear_btn.clicked.connect(self._on_clear)
-        btns.accepted.connect(self.accept)
-        btns.rejected.connect(self.reject)
+    # Сигналы
+    add_btn.clicked.connect(self._on_add)
+    del_btn.clicked.connect(self._on_delete)
+    clear_btn.clicked.connect(self._on_clear)
+    btns.accepted.connect(self.accept)
+    btns.rejected.connect(self.reject)
 
-        # Наполнение
-        self._reload_table()
+    # Наполнение
+    self._reload_table()
 
     def _reload_table(self):
         rows = []
@@ -387,7 +390,12 @@ class CertInnEditorDialog(QDialog):
         self.table.setRowCount(len(rows))
         for r, (tc, inn) in enumerate(rows):
             self.table.setItem(r, 0, QTableWidgetItem(str(tc)))
-            self.table.setItem(r, 1, QTableWidgetItem(str(inn)))
+            inn_item = QTableWidgetItem(str(inn))
+            # Подсветка пустого ИНН
+            if not str(inn).strip():
+                inn_item.setBackground(QColor("#fff3cd"))  # мягкий жёлтый
+                inn_item.setToolTip("ИНН не указан")
+            self.table.setItem(r, 1, inn_item)
 
     def _on_add(self):
         tc = self.tc_edit.text().strip()
@@ -395,15 +403,29 @@ class CertInnEditorDialog(QDialog):
         if not tc:
             QMessageBox.warning(self, "Ошибка", "Укажите значение ТС (например, тс25)")
             return
+        # Валидация ТС (разрешаем тсNN, допускаем латиницу tcNN; без пробелов)
+        tc_norm = tc.lower()
+        if not re.fullmatch(r"^(тс|tc)\d{1,4}$", tc_norm):
+            QMessageBox.warning(self, "Ошибка", "ТС должно быть в формате 'тс' + цифры, напр. 'тс25'")
+            return
+        # Валидация ИНН (если указан)
+        if inn:
+            if not inn.isdigit() or len(inn) not in (10, 12):
+                QMessageBox.warning(self, "Ошибка", "ИНН должен содержать 10 или 12 цифр")
+                return
         # предотвратить дубликаты по ТС
         for i in range(self.table.rowCount()):
-            if (self.table.item(i, 0) and self.table.item(i, 0).text().strip().lower() == tc.lower()):
+            if (self.table.item(i, 0) and self.table.item(i, 0).text().strip().lower() == tc_norm):
                 QMessageBox.warning(self, "Предупреждение", f"Пара для '{tc}' уже есть")
                 return
         r = self.table.rowCount()
         self.table.insertRow(r)
-        self.table.setItem(r, 0, QTableWidgetItem(tc))
-        self.table.setItem(r, 1, QTableWidgetItem(inn))
+        self.table.setItem(r, 0, QTableWidgetItem(tc_norm))
+        inn_item = QTableWidgetItem(inn)
+        if not inn:
+            inn_item.setBackground(QColor("#fff3cd"))
+            inn_item.setToolTip("ИНН не указан")
+        self.table.setItem(r, 1, inn_item)
         self.tc_edit.clear(); self.inn_edit.clear()
 
     def _on_delete(self):
@@ -422,6 +444,27 @@ class CertInnEditorDialog(QDialog):
             if tc:
                 result.append({tc: inn})
         return result
+
+    def accept(self):
+        # Финальная валидация перед сохранением (учитываем ручное редактирование ячеек)
+        seen = set()
+        for i in range(self.table.rowCount()):
+            tc = (self.table.item(i, 0).text().strip().lower() if self.table.item(i, 0) else "")
+            inn = (self.table.item(i, 1).text().strip() if self.table.item(i, 1) else "")
+            if not tc:
+                QMessageBox.warning(self, "Ошибка", f"Строка {i+1}: ТС не заполнено")
+                return
+            if not re.fullmatch(r"^(тс|tc)\d{1,4}$", tc):
+                QMessageBox.warning(self, "Ошибка", f"Строка {i+1}: ТС должно быть в формате 'тс' + цифры")
+                return
+            if tc in seen:
+                QMessageBox.warning(self, "Ошибка", f"Строка {i+1}: дубликат ТС '{tc}'")
+                return
+            seen.add(tc)
+            if inn and (not inn.isdigit() or len(inn) not in (10, 12)):
+                QMessageBox.warning(self, "Ошибка", f"Строка {i+1}: ИНН должен содержать 10 или 12 цифр")
+                return
+        super().accept()
 
 
 class StatusCard(QFrame):
@@ -609,6 +652,7 @@ class TokenManagementTab(QWidget):
     # --- CERTIFICATES ---
     def reload_certs(self):
         try:
+            cert_inns = self._load_cert_inns()
             cert_data = load_certificates_file()
             certs = cert_data.get('certificates', [])
             self.certs_table.setRowCount(len(certs))
@@ -619,7 +663,14 @@ class TokenManagementTab(QWidget):
                 self.certs_table.setItem(row, 0, QTableWidgetItem(name))
                 self.certs_table.setItem(row, 1, QTableWidgetItem(short))
                 mi = cert.get('multi_inn', False)
-                self.certs_table.setItem(row, 2, QTableWidgetItem('Да' if mi else 'Нет'))
+                mi_item = QTableWidgetItem('Да' if mi else 'Нет')
+                if mi:
+                    pairs = cert_inns.get(name, [])
+                    if not pairs:
+                        mi_item.setText('Да (нет пар)')
+                        mi_item.setBackground(QColor("#fff3cd"))
+                        mi_item.setToolTip("Multi-INN включён, но пары ТС→ИНН не заданы")
+                self.certs_table.setItem(row, 2, mi_item)
         except Exception as e:
             self.logger.error(f"Не удалось загрузить сертификаты: {e}")
 
