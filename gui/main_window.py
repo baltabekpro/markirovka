@@ -98,7 +98,7 @@ try:
         save_thumbprints_file
     )
     from scripts.region_manager import load_regions_data
-    from scripts.scheduler import Scheduler
+    from scripts.scheduler import Scheduler, check_if_running
     import scripts.main as scripts_main
     from gui.data_manager import get_data_manager
 except ImportError as e:
@@ -341,45 +341,45 @@ class CertInnEditorDialog(QDialog):
         self._build_ui()
 
     def _build_ui(self):
-    layout = QVBoxLayout(self)
+        layout = QVBoxLayout(self)
 
-    # Таблица пар
-    self.table = QTableWidget()
-    self.table.setColumnCount(2)
-    self.table.setHorizontalHeaderLabels(["ТС", "ИНН"])
-    self.table.horizontalHeader().setStretchLastSection(True)
-    self.table.setAlternatingRowColors(True)
-    layout.addWidget(self.table)
+        # Таблица пар
+        self.table = QTableWidget()
+        self.table.setColumnCount(2)
+        self.table.setHorizontalHeaderLabels(["ТС", "ИНН"])
+        self.table.horizontalHeader().setStretchLastSection(True)
+        self.table.setAlternatingRowColors(True)
+        layout.addWidget(self.table)
 
-    # Кнопки управления
-    controls = QHBoxLayout()
-    self.tc_edit = QLineEdit()
-    self.tc_edit.setPlaceholderText("тсNN (напр., тс25)")
-    self.inn_edit = QLineEdit()
-    self.inn_edit.setPlaceholderText("ИНН: 10 или 12 цифр (можно пусто)")
-    add_btn = QPushButton("Добавить")
-    del_btn = QPushButton("Удалить выбранное")
-    clear_btn = QPushButton("Очистить")
-    controls.addWidget(self.tc_edit)
-    controls.addWidget(self.inn_edit)
-    controls.addWidget(add_btn)
-    controls.addWidget(del_btn)
-    controls.addWidget(clear_btn)
-    layout.addLayout(controls)
+        # Кнопки управления
+        controls = QHBoxLayout()
+        self.tc_edit = QLineEdit()
+        self.tc_edit.setPlaceholderText("тсNN (напр., тс25)")
+        self.inn_edit = QLineEdit()
+        self.inn_edit.setPlaceholderText("ИНН: 10 или 12 цифр (можно пусто)")
+        add_btn = QPushButton("Добавить")
+        del_btn = QPushButton("Удалить выбранное")
+        clear_btn = QPushButton("Очистить")
+        controls.addWidget(self.tc_edit)
+        controls.addWidget(self.inn_edit)
+        controls.addWidget(add_btn)
+        controls.addWidget(del_btn)
+        controls.addWidget(clear_btn)
+        layout.addLayout(controls)
 
-    # Кнопки Ok/Cancel
-    btns = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
-    layout.addWidget(btns)
+        # Кнопки Ok/Cancel
+        btns = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        layout.addWidget(btns)
 
-    # Сигналы
-    add_btn.clicked.connect(self._on_add)
-    del_btn.clicked.connect(self._on_delete)
-    clear_btn.clicked.connect(self._on_clear)
-    btns.accepted.connect(self.accept)
-    btns.rejected.connect(self.reject)
+        # Сигналы
+        add_btn.clicked.connect(self._on_add)
+        del_btn.clicked.connect(self._on_delete)
+        clear_btn.clicked.connect(self._on_clear)
+        btns.accepted.connect(self.accept)  
+        btns.rejected.connect(self.reject)
 
-    # Наполнение
-    self._reload_table()
+        # Наполнение
+        self._reload_table()
 
     def _reload_table(self):
         rows = []
@@ -1529,8 +1529,8 @@ class MainWindow(QMainWindow):
         
         # Обновление статуса планировщика
         try:
-            scheduler = Scheduler()
-            if scheduler.is_running():
+            # Лёгкая проверка без создания экземпляра и лишних логов
+            if check_if_running():
                 self.scheduler_status.setText("Планировщик: Работает")
                 self.scheduler_status.setStyleSheet(f"color: {ModernStyle.SUCCESS};")
             else:

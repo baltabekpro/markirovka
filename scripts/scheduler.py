@@ -25,6 +25,19 @@ class Scheduler:
         self.thread = None
         scheduler_logger.info("Scheduler initialized")
     
+    def is_running(self) -> bool:
+        """Lightweight check whether scheduler background thread/process is running.
+        Returns True if a background thread is active or a process is detected by check_if_running()."""
+        try:
+            # Thread mode
+            if getattr(self, 'thread', None) and self.thread.is_alive():
+                return True
+            # Process mode
+            pid = check_if_running()
+            return pid is not None
+        except Exception:
+            return False
+    
     def load_config(self):
         """Load scheduler configuration"""
         try:
@@ -110,17 +123,17 @@ class Scheduler:
                 scheduler_logger.info("Daily report task completed successfully")
                 # Send success notification via Telegram
                 try:
-                    from telegram_bot import send_telegram_notification
+                    from telegram_bot import send_telegram_notification  # type: ignore
                     send_telegram_notification("✅ Ежедневная обработка успешно завершена")
-                except ImportError:
+                except Exception:
                     pass
             else:
                 scheduler_logger.error("Daily report task failed")
                 # Send error notification via Telegram
                 try:
-                    from telegram_bot import send_telegram_notification
+                    from telegram_bot import send_telegram_notification  # type: ignore
                     send_telegram_notification("❌ Ежедневная обработка завершилась с ошибкой")
-                except ImportError:
+                except Exception:
                     pass
                 
             # Update last run time
@@ -130,9 +143,9 @@ class Scheduler:
             log_exception(scheduler_logger, e, "Error running daily report task")
             # Send error notification via Telegram
             try:
-                from telegram_bot import send_telegram_notification
+                from telegram_bot import send_telegram_notification  # type: ignore
                 send_telegram_notification(f"❌ Ошибка при выполнении ежедневной обработки: {str(e)}")
-            except ImportError:
+            except Exception:
                 pass
     
     def send_email_reports(self):
@@ -148,17 +161,17 @@ class Scheduler:
                 scheduler_logger.info("Email reports sent successfully")
                 # Send success notification via Telegram
                 try:
-                    from telegram_bot import send_telegram_notification
+                    from telegram_bot import send_telegram_notification  # type: ignore
                     send_telegram_notification("✅ Отчеты по электронной почте успешно отправлены")
-                except ImportError:
+                except Exception:
                     pass
             else:
                 scheduler_logger.error("Failed to send email reports")
                 # Send error notification via Telegram
                 try:
-                    from telegram_bot import send_telegram_notification
+                    from telegram_bot import send_telegram_notification  # type: ignore
                     send_telegram_notification("❌ Не удалось отправить отчеты по электронной почте")
-                except ImportError:
+                except Exception:
                     pass
                 
             # Update last email run time
@@ -170,9 +183,9 @@ class Scheduler:
             log_exception(scheduler_logger, e, "Error sending email reports")
             # Send error notification via Telegram
             try:
-                from telegram_bot import send_telegram_notification
+                from telegram_bot import send_telegram_notification  # type: ignore
                 send_telegram_notification(f"❌ Ошибка при отправке отчетов по электронной почте: {str(e)}")
-            except ImportError:
+            except Exception:
                 pass
     
     def refresh_tokens(self):

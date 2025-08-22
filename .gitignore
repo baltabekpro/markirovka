@@ -1,6 +1,6 @@
 /TODO_BUSINESS.md
-* .idea/
-* __pycache__/
+*.idea/
+*__pycache__/
 * *.pyc
 * *.pyo
 * *.pyd
@@ -10,7 +10,7 @@
 * venv/
 * .DS_Store
 * Thumbs.db
-* .log
+*.log
 * .coverage
 * .pytest_cache/
 * .mypy_cache/
