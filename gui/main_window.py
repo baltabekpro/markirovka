@@ -55,6 +55,9 @@ def ensure_basic_files():
         (root / 'certificates.json').write_text(json.dumps({"certificates": []}, ensure_ascii=False, indent=2), encoding='utf-8')
     if not (root / 'cert_thumbprints.txt').exists():
         (root / 'cert_thumbprints.txt').write_text('', encoding='utf-8')
+    # cert_inns.json (карта сертификат -> список пар {"тсNN": "ИНН"})
+    if not (root / 'cert_inns.json').exists():
+        (root / 'cert_inns.json').write_text(json.dumps({}, ensure_ascii=False, indent=2), encoding='utf-8')
 
 ensure_basic_files()
 
@@ -324,6 +327,103 @@ class ModernStyle:
         """
 
 
+class CertInnEditorDialog(QDialog):
+    """Диалог редактирования пар ТС→ИНН для сертификата"""
+
+    def __init__(self, parent=None, cert_name: str = "", pairs: list | None = None):
+        super().__init__(parent)
+        self.setWindowTitle(f"ТС→ИНН: {cert_name}")
+        self.setModal(True)
+        self.resize(520, 420)
+        self._cert_name = cert_name
+        self._pairs = pairs or []  # формат: [{"тсNN": "ИНН"}, ...]
+        self._build_ui()
+
+    def _build_ui(self):
+        layout = QVBoxLayout(self)
+
+        # Таблица пар
+        self.table = QTableWidget()
+        self.table.setColumnCount(2)
+        self.table.setHorizontalHeaderLabels(["ТС", "ИНН"])
+        self.table.horizontalHeader().setStretchLastSection(True)
+        self.table.setAlternatingRowColors(True)
+        layout.addWidget(self.table)
+
+        # Кнопки управления
+        controls = QHBoxLayout()
+        self.tc_edit = QLineEdit(); self.tc_edit.setPlaceholderText("тсNN")
+        self.inn_edit = QLineEdit(); self.inn_edit.setPlaceholderText("ИНН (можно пусто)")
+        add_btn = QPushButton("Добавить")
+        del_btn = QPushButton("Удалить выбранное")
+        clear_btn = QPushButton("Очистить")
+        controls.addWidget(self.tc_edit)
+        controls.addWidget(self.inn_edit)
+        controls.addWidget(add_btn)
+        controls.addWidget(del_btn)
+        controls.addWidget(clear_btn)
+        layout.addLayout(controls)
+
+        # Кнопки Ok/Cancel
+        btns = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        layout.addWidget(btns)
+
+        # Сигналы
+        add_btn.clicked.connect(self._on_add)
+        del_btn.clicked.connect(self._on_delete)
+        clear_btn.clicked.connect(self._on_clear)
+        btns.accepted.connect(self.accept)
+        btns.rejected.connect(self.reject)
+
+        # Наполнение
+        self._reload_table()
+
+    def _reload_table(self):
+        rows = []
+        for item in self._pairs:
+            if isinstance(item, dict) and item:
+                tc, inn = next(iter(item.items()))
+                rows.append((tc, inn))
+        self.table.setRowCount(len(rows))
+        for r, (tc, inn) in enumerate(rows):
+            self.table.setItem(r, 0, QTableWidgetItem(str(tc)))
+            self.table.setItem(r, 1, QTableWidgetItem(str(inn)))
+
+    def _on_add(self):
+        tc = self.tc_edit.text().strip()
+        inn = self.inn_edit.text().strip()
+        if not tc:
+            QMessageBox.warning(self, "Ошибка", "Укажите значение ТС (например, тс25)")
+            return
+        # предотвратить дубликаты по ТС
+        for i in range(self.table.rowCount()):
+            if (self.table.item(i, 0) and self.table.item(i, 0).text().strip().lower() == tc.lower()):
+                QMessageBox.warning(self, "Предупреждение", f"Пара для '{tc}' уже есть")
+                return
+        r = self.table.rowCount()
+        self.table.insertRow(r)
+        self.table.setItem(r, 0, QTableWidgetItem(tc))
+        self.table.setItem(r, 1, QTableWidgetItem(inn))
+        self.tc_edit.clear(); self.inn_edit.clear()
+
+    def _on_delete(self):
+        r = self.table.currentRow()
+        if r >= 0:
+            self.table.removeRow(r)
+
+    def _on_clear(self):
+        self.table.setRowCount(0)
+
+    def get_pairs(self) -> list:
+        result = []
+        for i in range(self.table.rowCount()):
+            tc = self.table.item(i, 0).text().strip() if self.table.item(i, 0) else ""
+            inn = self.table.item(i, 1).text().strip() if self.table.item(i, 1) else ""
+            if tc:
+                result.append({tc: inn})
+        return result
+
+
 class StatusCard(QFrame):
     """Карточка статуса для отображения ключевой информации"""
 
@@ -396,7 +496,8 @@ class TokenManagementTab(QWidget):
         self.btn_edit_cert = self._make_toolbar_button("✎ cert", "secondary")
         self.btn_delete_cert = self._make_toolbar_button("– cert", "error")
         self.btn_install_cert = self._make_toolbar_button("Импорт", "success")
-        for b in (self.btn_add_cert, self.btn_edit_cert, self.btn_delete_cert, self.btn_install_cert):
+        self.btn_edit_cert_inns = self._make_toolbar_button("ТС→ИНН")
+        for b in (self.btn_add_cert, self.btn_edit_cert, self.btn_delete_cert, self.btn_install_cert, self.btn_edit_cert_inns):
             toolbar.addWidget(b)
         layout.addLayout(toolbar)
 
@@ -410,8 +511,8 @@ class TokenManagementTab(QWidget):
         splitter.addWidget(self.tokens_table)
         # Таблица сертификатов
         self.certs_table = QTableWidget()
-        self.certs_table.setColumnCount(2)
-        self.certs_table.setHorizontalHeaderLabels(["Имя", "Отпечаток"]) 
+        self.certs_table.setColumnCount(3)
+        self.certs_table.setHorizontalHeaderLabels(["Имя", "Отпечаток", "Multi-INN"]) 
         self.certs_table.horizontalHeader().setStretchLastSection(True)
         self.certs_table.setAlternatingRowColors(True)
         splitter.addWidget(self.certs_table)
@@ -433,6 +534,7 @@ class TokenManagementTab(QWidget):
         self.btn_edit_cert.clicked.connect(self.edit_certificate)
         self.btn_delete_cert.clicked.connect(self.delete_certificate)
         self.btn_install_cert.clicked.connect(self.install_certificate)
+        self.btn_edit_cert_inns.clicked.connect(self.edit_cert_inns)
 
     # --- TOKENS ---
     def reload_tokens(self):
@@ -516,30 +618,43 @@ class TokenManagementTab(QWidget):
                 short = thumb[:20] + '...' if len(thumb) > 23 else thumb
                 self.certs_table.setItem(row, 0, QTableWidgetItem(name))
                 self.certs_table.setItem(row, 1, QTableWidgetItem(short))
+                mi = cert.get('multi_inn', False)
+                self.certs_table.setItem(row, 2, QTableWidgetItem('Да' if mi else 'Нет'))
         except Exception as e:
             self.logger.error(f"Не удалось загрузить сертификаты: {e}")
 
     def add_certificate(self):
-        name, ok = QInputDialog.getText(self, "Новый сертификат", "Имя (владельца):")
-        if not ok:
+        # Диалог добавления с чекбоксом Multi-INN
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Новый сертификат")
+        form = QFormLayout(dialog)
+        name_edit = QLineEdit(); form.addRow("Имя (владельца):", name_edit)
+        thumb_edit = QLineEdit(); thumb_edit.setPlaceholderText("SHA1 отпечаток")
+        form.addRow("Отпечаток:", thumb_edit)
+        mi_check = QCheckBox("Поддерживает несколько ИНН (Multi-INN)")
+        form.addRow("", mi_check)
+        btns = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        form.addRow(btns)
+        btns.accepted.connect(dialog.accept); btns.rejected.connect(dialog.reject)
+        if dialog.exec() != QDialog.DialogCode.Accepted:
             return
-        thumb, ok = QInputDialog.getText(self, "Отпечаток", "SHA1 отпечаток:")
-        if not ok or not thumb.strip():
+        name = name_edit.text().strip()
+        thumb = thumb_edit.text().strip().lower()
+        if not name or not thumb:
+            QMessageBox.warning(self, "Ошибка", "Имя и отпечаток обязательны")
             return
-        thumb = thumb.strip().lower()
         # Обновляем thumbprints
         tps = load_thumbprints_file()
-        if thumb in tps:
+        if thumb in [tp.lower() for tp in tps]:
             QMessageBox.warning(self, "Ошибка", "Такой отпечаток уже есть")
             return
         tps.append(thumb)
         save_thumbprints_file(tps)
         cert_data = load_certificates_file()
         certs = cert_data.get('certificates', [])
-        if name.strip():
-            certs.append({'name': name.strip(), 'thumbprint': thumb})
-            cert_data['certificates'] = certs
-            save_certificates_file(cert_data)
+        certs.append({'name': name, 'thumbprint': thumb, 'multi_inn': bool(mi_check.isChecked())})
+        cert_data['certificates'] = certs
+        save_certificates_file(cert_data)
         self.reload_certs()
         QMessageBox.information(self, "Успех", "Сертификат добавлен")
 
@@ -549,28 +664,40 @@ class TokenManagementTab(QWidget):
             QMessageBox.warning(self, "Внимание", "Выберите сертификат")
             return
         name_item = self.certs_table.item(row, 0)
-        thumb_item = self.certs_table.item(row, 1)
         old_name = name_item.text()
-        old_thumb = thumb_item.text().replace('...', '')  # возможно усечён
+        # Получаем полные данные
         cert_data = load_certificates_file()
         certs = cert_data.get('certificates', [])
-        # Полный thumb
-        for c in certs:
-            if c.get('name') == old_name:
-                old_thumb = c.get('thumbprint', old_thumb)
-                break
-        new_name, ok = QInputDialog.getText(self, "Редактирование", "Имя:", text=old_name)
-        if not ok or not new_name.strip():
+        current = next((c for c in certs if c.get('name') == old_name), None)
+        if not current:
+            QMessageBox.critical(self, "Ошибка", "Не удалось найти данные сертификата")
             return
-        new_thumb, ok = QInputDialog.getText(self, "Редактирование", "Отпечаток (оставьте пустым чтобы не менять):")
-        if not ok:
+        old_thumb = current.get('thumbprint', '')
+        old_mi = bool(current.get('multi_inn', False))
+
+        # Диалог редактирования
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Редактирование сертификата")
+        form = QFormLayout(dialog)
+        name_edit = QLineEdit(old_name); form.addRow("Имя:", name_edit)
+        thumb_edit = QLineEdit(); thumb_edit.setPlaceholderText("Пусто — оставить как есть")
+        form.addRow("Отпечаток:", thumb_edit)
+        mi_check = QCheckBox("Поддерживает несколько ИНН (Multi-INN)"); mi_check.setChecked(old_mi)
+        form.addRow("", mi_check)
+        btns = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        form.addRow(btns)
+        btns.accepted.connect(dialog.accept); btns.rejected.connect(dialog.reject)
+        if dialog.exec() != QDialog.DialogCode.Accepted:
             return
-        real_thumb = old_thumb if not new_thumb.strip() else new_thumb.strip().lower()
+        new_name = name_edit.text().strip()
+        new_thumb = thumb_edit.text().strip().lower()
+        real_thumb = old_thumb if not new_thumb else new_thumb
         # Обновление списка
         for c in certs:
-            if c.get('thumbprint') == old_thumb or c.get('name') == old_name:
-                c['name'] = new_name.strip()
+            if c is current:
+                c['name'] = new_name
                 c['thumbprint'] = real_thumb
+                c['multi_inn'] = bool(mi_check.isChecked())
                 break
         cert_data['certificates'] = certs
         save_certificates_file(cert_data)
@@ -620,6 +747,8 @@ class TokenManagementTab(QWidget):
                 
                 layout.addRow("Имя владельца:", name_edit)
                 layout.addRow("Отпечаток SHA1:", thumbprint_edit)
+                multi_inn_check = QCheckBox("Поддерживает несколько ИНН (Multi-INN)")
+                layout.addRow("", multi_inn_check)
                 
                 buttons = QDialogButtonBox(
                     QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
@@ -659,8 +788,9 @@ class TokenManagementTab(QWidget):
                             existing = next((c for c in certs if c.get('thumbprint', '').lower() == thumbprint.lower()), None)
                             if existing:
                                 existing['name'] = name
+                                existing['multi_inn'] = bool(multi_inn_check.isChecked())
                             else:
-                                certs.append({'name': name, 'thumbprint': thumbprint.lower()})
+                                certs.append({'name': name, 'thumbprint': thumbprint.lower(), 'multi_inn': bool(multi_inn_check.isChecked())})
                             
                             cert_data['certificates'] = certs
                             save_certificates_file(cert_data)
@@ -681,6 +811,47 @@ class TokenManagementTab(QWidget):
                         
             except Exception as e:
                 QMessageBox.critical(self, "Ошибка", f"Ошибка обработки сертификата: {e}")
+
+    # --- CERT TС→ИНН EDITOR ---
+    def _load_cert_inns(self) -> dict:
+        try:
+            path = scripts_path / 'cert_inns.json'
+            if not path.exists():
+                return {}
+            with path.open('r', encoding='utf-8') as f:
+                data = json.load(f)
+            if isinstance(data, dict):
+                return data
+            return {}
+        except Exception as e:
+            self.logger.error(f"Не удалось загрузить cert_inns.json: {e}")
+            return {}
+
+    def _save_cert_inns(self, data: dict) -> bool:
+        try:
+            path = scripts_path / 'cert_inns.json'
+            with path.open('w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+            return True
+        except Exception as e:
+            self.logger.error(f"Не удалось сохранить cert_inns.json: {e}")
+            return False
+
+    def edit_cert_inns(self):
+        row = self.certs_table.currentRow()
+        if row < 0:
+            QMessageBox.warning(self, "Внимание", "Выберите сертификат")
+            return
+        name = self.certs_table.item(row, 0).text()
+        data = self._load_cert_inns()
+        current_pairs = data.get(name, [])
+        dlg = CertInnEditorDialog(self, cert_name=name, pairs=current_pairs)
+        if dlg.exec() == QDialog.DialogCode.Accepted:
+            data[name] = dlg.get_pairs()
+            if self._save_cert_inns(data):
+                QMessageBox.information(self, "Сохранено", "Пары ТС→ИНН сохранены")
+            else:
+                QMessageBox.critical(self, "Ошибка", "Не удалось сохранить пары ТС→ИНН")
 
 
 
